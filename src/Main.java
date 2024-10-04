@@ -2,10 +2,10 @@
     import java.util.*;
     import java.io.*;
     import java.io.IOException;
+    import java.util.regex.Pattern;
 
-    
-    
-class EncryptionAndDecryption {
+
+    class EncryptionAndDecryption {
     private final String input;
     private int shift;
 
@@ -196,10 +196,11 @@ class FileHandler {
     
     
 public class Main {
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+        String input;
         String result;
         int leng;
         int rus_language_length = 32;
@@ -216,44 +217,71 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    System.out.println("Выберите язык: (1 - русский, 2 - английский)");
-                    leng = scanner.nextInt();
-                    scanner.nextLine();
 
-                    System.out.println("Введите строку для шифрования: ");
-                    String input = scanner.nextLine();
+                    leng = chooseLanguage();
+
+
 
                     if (leng==1){
-                        int shift = getShift(scanner, rus_language_length);
-                        EncryptionAndDecryption encryption = new EncryptionAndDecryption(input, shift);
-                        System.out.println("Зашифрованная строка: " + encryption.russianEncrypt());
-                        System.out.println();
+                        input = getInputString();
+                        boolean isRus = isRus(input);
+                        if (isRus) {
+                            int shift = getShift(scanner, rus_language_length);
+                            EncryptionAndDecryption encryption = new EncryptionAndDecryption(input, shift);
+                            System.out.println("Зашифрованная строка: " + encryption.russianEncrypt());
+                            System.out.println();
+                        }
+                        else {
+                            System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
+                            System.out.println();
+                        }
                     } else if(leng==2) {
-                        int shift = getShift(scanner, eng_language_length);
-                        EncryptionAndDecryption encryption = new EncryptionAndDecryption(input, shift);
-                        System.out.println("Зашифрованная строка: " + encryption.englishEncrypt());
-                        System.out.println();
+                        input = getInputString();
+                        boolean isEng = isEnglish(input);
+                        if (isEng) {
+                            int shift = getShift(scanner, eng_language_length);
+                            EncryptionAndDecryption encryption = new EncryptionAndDecryption(input, shift);
+                            System.out.println("Зашифрованная строка: " + encryption.englishEncrypt());
+                            System.out.println();
+                        }
+                        else {
+                            System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
+                            System.out.println();
+                        }
                     }
                     else {
                         System.out.println("Неверный выбор действия.");
                     }
                     break;
                 case 2:
-                    System.out.println("Выберите язык: (1 - русский, 2 - английский)");
-                    leng = scanner.nextInt();
-                    scanner.nextLine();
+                    leng = chooseLanguage();
 
-                    System.out.println("Введите строку для расшифровки:");
-                    String input2 = scanner.nextLine();
 
                     if (leng == 1) {
-                        EncryptionAndDecryption decryption = new EncryptionAndDecryption(input2, rus_language_length);
-                        result = decryption.russianDecrypt();
-                        System.out.println("Расшифрованный текст:\n" + result);
+                        input = getInputString();
+                        boolean isRus = isRus(input);
+                        if (isRus) {
+                            EncryptionAndDecryption decryption = new EncryptionAndDecryption(input, rus_language_length);
+                            result = decryption.russianDecrypt();
+                            System.out.println("Расшифрованный текст:\n" + result);
+                        }
+                        else {
+                            System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
+                            System.out.println();
+                        }
+
                     } else if (leng == 2) {
-                        EncryptionAndDecryption decryption = new EncryptionAndDecryption(input2, eng_language_length);
-                        result = decryption.englishDecrypt();
-                        System.out.println("Расшифрованный текст:\n" + result);
+                        input = getInputString();
+                        boolean isEng = isEnglish(input);
+                        if (isEng) {
+                            EncryptionAndDecryption decryption = new EncryptionAndDecryption(input, eng_language_length);
+                            result = decryption.englishDecrypt();
+                            System.out.println("Расшифрованный текст:\n" + result);
+                        }
+                        else {
+                            System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
+                            System.out.println();
+                        }
                     } else {
                         System.out.println("Неверный выбор действия.");
                     }
@@ -272,17 +300,21 @@ public class Main {
 
                     System.out.println("Содержимое файла:\n" + fileContent);
 
-                    System.out.println("Выберите язык: (1 - русский, 2 - английский)");
-                    leng = scanner.nextInt();
-                    scanner.nextLine();
+                    leng = chooseLanguage();
+
 
                     System.out.println("Выберите действие: (1 - шифровать, 2 - дешифровать)");
                     int action = scanner.nextInt();
                     scanner.nextLine();
-
+                    System.out.println();
                     String resultContent;
 
                     if (leng==1 & action == 1) {
+                        if (!isRus(fileContent)) {
+                            System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
+                            System.out.println();
+                            break;
+                        }
                         int shift_n_file = getShift(scanner, rus_language_length);
                         EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, shift_n_file);
                         resultContent = processor.russianEncrypt();
@@ -290,6 +322,11 @@ public class Main {
                         System.out.println("Полученный зашифрованный текст:\n" + FileHandler.readFile("output.txt"));
                     }
                     else if(leng==2 & action==1){
+                        if (!isEnglish(fileContent)) {
+                            System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
+                            System.out.println();
+                            break;
+                        }
                         int shift_n_file = getShift(scanner, eng_language_length);
                         EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, shift_n_file);
                         resultContent = processor.englishEncrypt();
@@ -297,12 +334,22 @@ public class Main {
                         System.out.println("Полученный зашифрованный текст:\n" + FileHandler.readFile("output.txt"));
                     }
                     else if (leng==1 & action == 2) {
+                        if (!isRus(fileContent)) {
+                            System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
+                            System.out.println();
+                            break;
+                        }
                         EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, 0);
                         resultContent = processor.russianDecrypt();
                         System.out.println("Расшифрованный текст:\n" + resultContent);
                         FileHandler.writeToFile("decrypted_output.txt", resultContent);
                     }
                     else if(leng==2 & action==2){
+                        if (!isEnglish(fileContent)) {
+                            System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
+                            System.out.println();
+                            break;
+                        }
                         EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, 0);
                         resultContent = processor.englishDecrypt();
                         System.out.println("Расшифрованный текст:\n" + resultContent);
@@ -340,6 +387,24 @@ public class Main {
             }
         }
         return shift;
+    }
+
+    private static boolean isEnglish(String input){
+        return Pattern.matches("^[a-zA-Z0-9,.!?;:\"'()\\[\\]{}\\s-]*$", input);
+    }
+    private static boolean isRus(String input){
+        return Pattern.matches("^[а-яА-ЯёЁ0-9,.!?;:\"'()\\[\\]{}\\s-]*$", input);
+    }
+    private static int chooseLanguage(){
+        System.out.println("Выберите язык: (1 - русский, 2 - английский)");
+        return scanner.nextInt();
+
+
+    }
+    private static String getInputString(){
+        scanner.nextLine();
+        System.out.println("Введите строку для шифрования: ");
+        return scanner.nextLine();
     }
 
 }
