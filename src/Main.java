@@ -1,11 +1,11 @@
 
-    import java.util.*;
-    import java.io.*;
-    import java.io.IOException;
-    import java.util.regex.Pattern;
+import java.util.*;
+import java.io.*;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 
-    class EncryptionAndDecryption {
+class EncryptionAndDecryption {
     private final String input;
     private int shift;
 
@@ -191,10 +191,10 @@ class FileHandler {
 }
 
 
-    
-    
-    
-    
+
+
+
+
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -210,202 +210,218 @@ public class Main {
             System.out.println("1: Зашифровка");
             System.out.println("2: Расшифровка");
             System.out.println("3: Работа с файлом");
+            System.out.println("0: Выход из программы");
+            if (scanner.hasNextInt()) {
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (choice) {
+                    case 1:
+
+                        leng = chooseLanguage();
 
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
 
-            switch (choice) {
-                case 1:
+                        if (leng == 1) {
+                            input = getInputString();
+                            boolean isRus = isRus(input);
+                            if (isRus) {
+                                int shift = getShift(scanner, rus_language_length);
+                                EncryptionAndDecryption encryption = new EncryptionAndDecryption(input, shift);
+                                System.out.println("Зашифрованная строка: " + encryption.russianEncrypt());
+                                System.out.println();
+                            } else {
+                                System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
+                                System.out.println();
+                            }
+                        } else if (leng == 2) {
+                            input = getInputString();
+                            boolean isEng = isEnglish(input);
+                            if (isEng) {
+                                int shift = getShift(scanner, eng_language_length);
+                                EncryptionAndDecryption encryption = new EncryptionAndDecryption(input, shift);
+                                System.out.println("Зашифрованная строка: " + encryption.englishEncrypt());
+                                System.out.println();
+                            }
 
-                    leng = chooseLanguage();
+                        }
+
+                        break;
+                    case 2:
+                        leng = chooseLanguage();
 
 
+                        if (leng == 1) {
+                            input = getInputString();
+                            boolean isRus = isRus(input);
+                            if (isRus) {
+                                EncryptionAndDecryption decryption = new EncryptionAndDecryption(input, rus_language_length);
+                                result = decryption.russianDecrypt();
+                                System.out.println("Расшифрованный текст:\n" + result);
+                            } else {
+                                System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
+                                System.out.println();
+                            }
 
-                    if (leng==1){
-                        input = getInputString();
-                        boolean isRus = isRus(input);
-                        if (isRus) {
-                            int shift = getShift(scanner, rus_language_length);
-                            EncryptionAndDecryption encryption = new EncryptionAndDecryption(input, shift);
-                            System.out.println("Зашифрованная строка: " + encryption.russianEncrypt());
+                        } else if (leng == 2) {
+                            input = getInputString();
+                            boolean isEng = isEnglish(input);
+                            if (isEng) {
+                                EncryptionAndDecryption decryption = new EncryptionAndDecryption(input, eng_language_length);
+                                result = decryption.englishDecrypt();
+                                System.out.println("Расшифрованный текст:\n" + result);
+                            } else {
+                                System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
+                                System.out.println();
+                            }
+                        }
+
+                        break;
+
+
+                    case 3:
+
+                        String inputFilePath = "input.txt";
+                        String fileContent = FileHandler.readFile(inputFilePath);
+                        if (fileContent.isEmpty()) {
+                            System.out.println("Файл пуст или не был прочитан. Пожалуйста, попробуйте снова.");
                             System.out.println();
-                        }
-                        else {
-                            System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
-                            System.out.println();
-                        }
-                    } else if(leng==2) {
-                        input = getInputString();
-                        boolean isEng = isEnglish(input);
-                        if (isEng) {
-                            int shift = getShift(scanner, eng_language_length);
-                            EncryptionAndDecryption encryption = new EncryptionAndDecryption(input, shift);
-                            System.out.println("Зашифрованная строка: " + encryption.englishEncrypt());
-                            System.out.println();
-                        }
-                        else {
-                            System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
-                            System.out.println();
-                        }
-                    }
-                    else {
-                        System.out.println("Неверный выбор действия.");
-                    }
-                    break;
-                case 2:
-                    leng = chooseLanguage();
-
-
-                    if (leng == 1) {
-                        input = getInputString();
-                        boolean isRus = isRus(input);
-                        if (isRus) {
-                            EncryptionAndDecryption decryption = new EncryptionAndDecryption(input, rus_language_length);
-                            result = decryption.russianDecrypt();
-                            System.out.println("Расшифрованный текст:\n" + result);
-                        }
-                        else {
-                            System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
-                            System.out.println();
+                            continue;
                         }
 
-                    } else if (leng == 2) {
-                        input = getInputString();
-                        boolean isEng = isEnglish(input);
-                        if (isEng) {
-                            EncryptionAndDecryption decryption = new EncryptionAndDecryption(input, eng_language_length);
-                            result = decryption.englishDecrypt();
-                            System.out.println("Расшифрованный текст:\n" + result);
-                        }
-                        else {
-                            System.out.println("Убедитесь, что в ведённой строке алфавит соответствует выбранному языку: ");
-                            System.out.println();
-                        }
-                    } else {
-                        System.out.println("Неверный выбор действия.");
-                    }
-                    break;
+                        System.out.println("Содержимое файла:\n" + fileContent);
+
+                        leng = chooseLanguage();
 
 
-                case 3:
-
-                    String inputFilePath = "input.txt";
-                    String fileContent = FileHandler.readFile(inputFilePath);
-                    if (fileContent.isEmpty()) {
-                        System.out.println("Файл пуст или не был прочитан. Пожалуйста, попробуйте снова.");
+                        System.out.println("Выберите действие: (1 - шифровать, 2 - дешифровать)");
+                        int action = scanner.nextInt();
+                        scanner.nextLine();
                         System.out.println();
-                        continue;
-                    }
+                        String resultContent;
 
-                    System.out.println("Содержимое файла:\n" + fileContent);
+                        if (leng == 1 & action == 1) {
+                            if (!isRus(fileContent)) {
+                                System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
+                                System.out.println();
+                                break;
+                            }
+                            int shift_n_file = getShift(scanner, rus_language_length);
+                            EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, shift_n_file);
+                            resultContent = processor.russianEncrypt();
+                            FileHandler.writeToFile("output.txt", resultContent);
+                            System.out.println("Полученный зашифрованный текст:\n" + FileHandler.readFile("output.txt"));
+                        } else if (leng == 2 & action == 1) {
+                            if (!isEnglish(fileContent)) {
+                                System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
+                                System.out.println();
+                                break;
+                            }
+                            int shift_n_file = getShift(scanner, eng_language_length);
+                            EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, shift_n_file);
+                            resultContent = processor.englishEncrypt();
+                            FileHandler.writeToFile("output.txt", resultContent);
+                            System.out.println("Полученный зашифрованный текст:\n" + FileHandler.readFile("output.txt"));
+                        } else if (leng == 1 & action == 2) {
+                            if (!isRus(fileContent)) {
+                                System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
+                                System.out.println();
+                                break;
+                            }
+                            EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, 0);
+                            resultContent = processor.russianDecrypt();
+                            System.out.println("Расшифрованный текст:\n" + resultContent);
+                            FileHandler.writeToFile("decrypted_output.txt", resultContent);
+                        } else if (leng == 2 & action == 2) {
+                            if (!isEnglish(fileContent)) {
+                                System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
+                                System.out.println();
+                                break;
+                            }
+                            EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, 0);
+                            resultContent = processor.englishDecrypt();
+                            System.out.println("Расшифрованный текст:\n" + resultContent);
+                            FileHandler.writeToFile("decrypted_output.txt", resultContent);
+                        } else {
+                            System.out.println("Неверный выбор действия.");
+                            scanner.next();
 
-                    leng = chooseLanguage();
-
-
-                    System.out.println("Выберите действие: (1 - шифровать, 2 - дешифровать)");
-                    int action = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.println();
-                    String resultContent;
-
-                    if (leng==1 & action == 1) {
-                        if (!isRus(fileContent)) {
-                            System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
-                            System.out.println();
-                            break;
                         }
-                        int shift_n_file = getShift(scanner, rus_language_length);
-                        EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, shift_n_file);
-                        resultContent = processor.russianEncrypt();
-                        FileHandler.writeToFile("output.txt", resultContent);
-                        System.out.println("Полученный зашифрованный текст:\n" + FileHandler.readFile("output.txt"));
-                    }
-                    else if(leng==2 & action==1){
-                        if (!isEnglish(fileContent)) {
-                            System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
-                            System.out.println();
-                            break;
-                        }
-                        int shift_n_file = getShift(scanner, eng_language_length);
-                        EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, shift_n_file);
-                        resultContent = processor.englishEncrypt();
-                        FileHandler.writeToFile("output.txt", resultContent);
-                        System.out.println("Полученный зашифрованный текст:\n" + FileHandler.readFile("output.txt"));
-                    }
-                    else if (leng==1 & action == 2) {
-                        if (!isRus(fileContent)) {
-                            System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
-                            System.out.println();
-                            break;
-                        }
-                        EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, 0);
-                        resultContent = processor.russianDecrypt();
-                        System.out.println("Расшифрованный текст:\n" + resultContent);
-                        FileHandler.writeToFile("decrypted_output.txt", resultContent);
-                    }
-                    else if(leng==2 & action==2){
-                        if (!isEnglish(fileContent)) {
-                            System.out.println("Убедитесь, что в выбранном файле алфавит соответствует выбранному языку: ");
-                            System.out.println();
-                            break;
-                        }
-                        EncryptionAndDecryption processor = new EncryptionAndDecryption(fileContent, 0);
-                        resultContent = processor.englishDecrypt();
-                        System.out.println("Расшифрованный текст:\n" + resultContent);
-                        FileHandler.writeToFile("decrypted_output.txt", resultContent);
-                    }
 
-                    else {
-                        System.out.println("Неверный выбор действия.");
-                    }
+
+
+                    case 0:
+                        System.out.println("Выход из программы.");
+                        scanner.close();
+                        return;
+
+
+                    default:
+                        System.out.println("Неверный выбор, попробуйте снова.");
+                        scanner.next();
+
+
+
+                }
+
+            }
+
+            else {
+                    System.out.println("Некорректный ввод. Пожалуйста, введите число.");
+                    scanner.next();
+                }
+
+
+        }
+        }
+        private static int getShift(Scanner scanner, int language_length) {
+            System.out.println("Введите сдвиг (от " + -language_length + " до " + language_length + ", не считая 0):");
+            int shift;
+
+            while (true) {
+
+                shift = scanner.nextInt();
+                if (shift > language_length || shift < -language_length || shift == 0) {
+                    System.out.println("Введите корректный сдвиг.");
+                } else {
                     break;
-
-
-
-                case 0:
-                    System.out.println("Выход из программы.");
-                    scanner.close();
-                    return;
-                default:
-                    System.out.println("Неверный выбор, попробуйте снова.");
+                }
             }
+            return shift;
+        }
+
+        private static boolean isEnglish(String input){
+            return Pattern.matches("^[a-zA-Z0-9,.!?;:\"'()\\[\\]{}\\s-]*$", input);
+        }
+        private static boolean isRus(String input){
+            return Pattern.matches("^[а-яА-ЯёЁ0-9,.!?;:\"'()\\[\\]{}\\s-]*$", input);
+        }
+        private static int chooseLanguage(){
+
+            System.out.println("Выберите язык: (1 - русский, 2 - английский)");
+
+            while (true) {
+                if (scanner.hasNextInt()) {
+                    int choice = scanner.nextInt();
+                    if (choice == 1 || choice == 2) {
+                        return choice;
+                    } else {
+                        System.out.println("Некорректный ввод. Пожалуйста, введите 1 или 2.");
+                    }
+                } else {
+                    System.out.println("Некорректный ввод. Пожалуйста, введите 1 или 2.");
+                    scanner.next();
+                }
+            }
+
+
+
+        }
+        private static String getInputString(){
+            scanner.nextLine();
+            System.out.println("Введите строку для шифрования: ");
+            return scanner.nextLine();
         }
 
     }
-    private static int getShift(Scanner scanner, int language_length) {
-        System.out.println("Введите сдвиг (от " + -language_length + " до " + language_length + ", не считая 0):");
-        int shift;
-
-        while (true) {
-
-            shift = scanner.nextInt();
-            if (shift > language_length || shift < -language_length || shift == 0) {
-                System.out.println("Введите корректный сдвиг.");
-            } else {
-                break;
-            }
-        }
-        return shift;
-    }
-
-    private static boolean isEnglish(String input){
-        return Pattern.matches("^[a-zA-Z0-9,.!?;:\"'()\\[\\]{}\\s-]*$", input);
-    }
-    private static boolean isRus(String input){
-        return Pattern.matches("^[а-яА-ЯёЁ0-9,.!?;:\"'()\\[\\]{}\\s-]*$", input);
-    }
-    private static int chooseLanguage(){
-        System.out.println("Выберите язык: (1 - русский, 2 - английский)");
-        return scanner.nextInt();
-
-
-    }
-    private static String getInputString(){
-        scanner.nextLine();
-        System.out.println("Введите строку для шифрования: ");
-        return scanner.nextLine();
-    }
-
-}
 
